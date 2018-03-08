@@ -1,0 +1,135 @@
+from enum import Enum
+from abc import ABCMeta
+import pickle
+import re
+import json
+glossary = {}
+
+with open("glossary.json", 'r') as f:
+    glossary = json.loads(f.read())
+assert(glossary != {})
+
+all_skaters = []
+all_competitions = []
+
+class Catagory(Enum):
+    MEN = 1
+    LADIES = 2
+
+class SkateType(Enum):
+    SP = 1
+    FS = 2
+
+
+class Competition: 
+    def __init__(self, name, catagory, skate_type, date, skates = []): 
+        self.name = name 
+        self.skates = skates
+        self.date = date
+        self.skate_type = skate_type
+        self.catagory = catagory
+
+
+class Skater():
+    def __init__(self, name, catagory, skates = []): 
+        self.name = name
+        self.catagory = catagory
+        self.file_name = name.lower().replace(" ", "_") + ".txt"
+        self.skates = skates
+
+    def get_file_name(self): 
+        return self.name.replace(" ", "_").lower() + '.pk1'
+    
+    def save(self):
+        with open(self.get_file_name(), 'wb') as output:
+            pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
+
+    def addSkate(self, skate):
+        if(skate not in self.skates):
+            self.skates.append(skate)
+
+class Skate(): 
+    def __init__(self, f):
+
+        self.TES = 0
+        self.PCS = 0
+        program = []
+        line = readline(f)
+        i = 0
+        summary_line = -1
+        technical_line = -1
+        technical_end = -1
+        performance_line = -1
+        
+
+        length = len(line)
+        while line[0] != "Deductions":
+            if(line[0] == "Program Components"): 
+                performance_line = i + 1
+                technical_end = i - 1
+            if(line[0] == "Executed"): 
+                summary_line = i - 1
+                technical_line = i + 2
+            program.append(line)
+
+            line = readline(f)
+            i += 1
+        
+        skater_name = program[summary_line][0].split('_', 1)
+        skater_name.pop(0)
+        skater_name = "".join(skater_name)
+        self.skater = None
+        for x in all_skaters:
+            if x.name == skater_name:
+                self.skater = x
+                break
+        if(self.skater is None): 
+            self.skater = Skater(skater_name, Catagory.MEN)
+        
+        self.skater.addSkate(self)
+        self.elements = []
+        self.performances = []
+
+        line = program[technical_line]
+        
+        for i in range(technical_line, technical_end): 
+            self.elements.append(Element(program[i]))
+
+        for i in range(performance_line, performance_line + 5): 
+            self.performances.append(program[i][length - 1])
+    # def __init__(self, competition, skater, type, elements = []):
+    #     self.skater = skater
+    #     skater.addSkate(self)
+    #     self.TES = 0
+    #     self.PCS = 0
+    #     self.elements = elements
+ 
+
+"3 StSq3,3.30,,,1.14,2 3,1 2,1,3 3,2 3,4.44"
+"5 3F+3T,10.56,,x 1.30,1 2,2 2,2,2 2,1 2,11.86"
+class Element(): 
+    def __init__(self, line): 
+        # self.competition = competition
+        length = len(line)
+        self.type = line[0].split(" ")[1]
+        
+        #if()
+        self.take_notes(line[1])
+        self.base = float(self.removeExtra(line[1]))
+        self.goe = float(self.removeExtra(line[2]))
+        self.score = line[length - 1]
+        self.notes = line[1]
+        self.attributes = []
+
+    def removeExtra(self, st):
+        st.replace("<", "").replace(" ", "").replace(">", "").replace("!", "").replace("e", "")
+        st = st.split("V")[0]
+        return st
+    def take_notes(self, st):
+        attributes = glossary["technical_elements"]["jumps"]['attributes']
+        for item in attributes: 
+            if item[0] in st: 
+                self.attributes += item[1]
+def readline(f): 
+    line = f.readline().rstrip().split(',')
+    return line

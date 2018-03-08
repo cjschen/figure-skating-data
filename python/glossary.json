@@ -1,0 +1,54 @@
+{
+    "technical_elements": {
+        "jumps" : {
+            "A" : {
+                "name": "Axel",
+                "base_value": [
+                    0,
+                    0
+                ]
+            },
+            "attributes" : [
+                ["<", "underrotated"], 
+                [">", "overrotated"],
+                ["<<", "downgraded"],
+                ["+REP", "repeated jump"],
+                ["e", "edge call"],
+                ["!", "warning"]
+            ]
+        },
+        "spins": {
+           "attributes":[
+                ["V", "failed spin requirements"]
+           ] 
+        }
+
+    },
+    "performance_elements": {
+        "elements": [
+            "Skating Skills",
+            "Transitions",
+            "Performance", 
+            "Composition",
+            "Interpretation of the Music"
+        ],
+        "factors": {
+            "Men": {
+                "SP": 1.00,
+                "FS": 2.00
+            },
+            "Ladies": {
+                "SP": 0.80,
+                "FS": 1.60
+            },
+            "Pairs": {
+                "SP": 0.80,
+                "FS": 1.60
+            },
+            "Dance": {
+                "SP": 0.80,
+                "FS": 1.20
+            }
+        }
+    }
+}
