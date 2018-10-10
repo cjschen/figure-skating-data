@@ -1,0 +1,4 @@
+LTTextBoxHorizontal
+(323.349197624985, 751.6850234130075, 496.2996109405907, 833.4908628978975)
+Traceback (most recent call last):
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 16-17: character maps to <undefined>

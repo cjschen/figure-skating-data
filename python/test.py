@@ -1,5 +1,6 @@
 # file_str = "c:\Users\Sijia Chen\OneDrive\3B\CS486\Project\raw_data\wc2017_Men_SP_Scores.txt"
 from skating import Skater, Skate, Catagory, SkateType, Competition
+import unittest
 
 # line = fl.readline().rstrip()
 # isInfo = False
