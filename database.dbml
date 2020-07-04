@@ -1,0 +1,85 @@
+Table Circuits {
+  id int [pk]
+  name varchar
+}
+
+Table Skaters {
+  name varchar [pk]
+  birthday datetime
+  country varchar
+  circuit int // male or femae
+}
+
+Table Judges {
+  name varchar [pk]
+  country varchar
+}
+
+Table Countries {
+  name varchar [pk]
+}
+
+Table Skates {
+  id int [pk]
+  event_id int 
+  skater varchar
+  type boolean // free or short
+}
+
+Table Events {
+  id int [pk]
+  competition_id int [pk]
+}
+
+Table Competitions {
+  id int [pk]
+  location varchar 
+  time datetime
+}
+
+Table TechnicalElements {
+  id int [pk]
+  skate_id int [ref: > Skates.id]
+  type varchar
+  base_score short
+  downgraded boolean // Marked by < or <<
+  is_second_half boolean // Marked by x next to base value
+  edge_call boolean // Marked by e
+  is_rep boolean // Marked by +REP 
+  failed_requirements boolean // Marked by V
+  edge_warning boolean // Marked by ! 
+  GOE short 
+}
+
+Table PerformanceElement {
+  id int [pk]
+  skate_id int
+  type varchar
+  multiplier short
+}
+
+Table TechnicalElementReference {
+  name varchar [pk]
+  base_score int
+  is_jump boolean
+}
+
+
+Ref: Skaters.country > Countries.name
+Ref: Competitions.id > Events.competition_id
+Ref: Skates.skater > Skaters.name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
