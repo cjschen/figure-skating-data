@@ -2,6 +2,17 @@
 from skating import Skater, Skate, Catagory, SkateType, Competition
 import unittest
 
+class testPDFReader(unittest.TestCase):
+    def test_column_row_size(self): 
+        pass
+
+    def test_num_skaters(self):
+        pass 
+
+        
+if __name__ == '__main__':
+    unittest.main()
+
 # line = fl.readline().rstrip()
 # isInfo = False
 # while line:
