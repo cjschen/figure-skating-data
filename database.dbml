@@ -3,15 +3,16 @@ Table Circuits {
   name varchar
 }
 
-Table Skaters {
-  name varchar [pk]
+Table Athlete {
+  id int [pk]
+  name varchar 
   birthday datetime
   country varchar
-  circuit int // male or femae
 }
 
 Table Judges {
-  name varchar [pk]
+  id int [pk]
+  name varchar 
   country varchar
 }
 
@@ -19,27 +20,24 @@ Table Countries {
   name varchar [pk]
 }
 
-Table Skates {
+Table IndividualSkate {
   id int [pk]
-  event_id int 
-  skater varchar
+  competition int [ref: > Competitions.id] 
+  athlete varchar
   type boolean // free or short
-}
-
-Table Events {
-  id int [pk]
-  competition_id int [pk]
+  score int
 }
 
 Table Competitions {
   id int [pk]
+  level int // novice, junior, senior
   location varchar 
   time datetime
 }
 
 Table TechnicalElements {
   id int [pk]
-  skate_id int [ref: > Skates.id]
+  skate_id int [ref: > IndividualSkate.id]
   type varchar
   base_score short
   downgraded boolean // Marked by < or <<
@@ -64,10 +62,23 @@ Table TechnicalElementReference {
   is_jump boolean
 }
 
+Table JudgesTechnical {
+  judge int [ref: > Judges.id]
+  technical_element int [ref: > TechnicalElements.id]
+  score int 
+  dropped boolean
+}
 
-Ref: Skaters.country > Countries.name
-Ref: Competitions.id > Events.competition_id
-Ref: Skates.skater > Skaters.name
+Table JudgesPerformance {
+  judge int [ref: > Judges.id]
+  perfromance_element int [ref: > PerformanceElement.id]
+  score int 
+}
+
+
+Ref: Athlete.country > Countries.name
+Ref: Judges.country > Countries.name
+Ref: IndividualSkate.athlete > Athlete.id
 
 
 
