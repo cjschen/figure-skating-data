@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 from abc import ABCMeta
 import pickle
 import re
@@ -17,8 +17,12 @@ class Catagory(Enum):
     LADIES = 2
 
 class SkateType(Enum):
-    SP = 1
-    FS = 2
+    SP = auto()
+    FS = auto()
+
+class DeductionTypes(Enum):
+    Fall = auto()
+class Deduction:
 
 
 class Competition: 

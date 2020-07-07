@@ -1,4 +1,4 @@
-import csv 
+import csv
 
 def is_number(num: str) -> bool: 
     try:
@@ -6,6 +6,23 @@ def is_number(num: str) -> bool:
         return True
     except ValueError:
         return False      
+
+def read_intro(line: list):
+    pass
+
+def read_deduction(line: list):
+    
+    
+    pass
+
+def read_tes(line: list):
+
+
+    pass
+
+
+def read_pcs(line: list):
+    pass
 
 data = []
 
@@ -48,6 +65,8 @@ with open(filename, newline='') as f:
         elif stage == 3:
             # Deductions
             skaters += [skater]
+
+
             skater = {}
             stage = 0
 
