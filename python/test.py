@@ -1,5 +1,5 @@
 # file_str = "c:\Users\Sijia Chen\OneDrive\3B\CS486\Project\raw_data\wc2017_Men_SP_Scores.txt"
-from skating import Skater, Skate, Catagory, SkateType, Competition
+from python.skating import Athlete, Skate, Catagory, SkateType, Competition
 import unittest
 
 class testPDFReader(unittest.TestCase):
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 #     return line
 
 # fl = open("raw_data/wc2017_Men_SP_Scores.csv", 'r') 
-fl = open("raw_data/gpcan2017_Men_SP_Scores.csv", 'r') 
+fl = open("raw_data/csvs/gpcan2017_Men_SP_Scores.csv", 'r') 
 
 gpcan2017_Men_SP = Competition("Grand Prix Skate Canada", Catagory.MEN, SkateType.SP, "")
 

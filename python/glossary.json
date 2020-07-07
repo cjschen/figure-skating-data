@@ -13,8 +13,9 @@
                 [">", "overrotated"],
                 ["<<", "downgraded"],
                 ["+REP", "repeated jump"],
+                ["+COMBO", "missed combo"],
                 ["e", "edge call"],
-                ["!", "warning"]
+                ["!", "edge warning"]
             ]
         },
         "spins": {

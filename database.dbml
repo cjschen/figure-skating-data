@@ -12,7 +12,7 @@ Table Athlete {
 
 Table Judges {
   id int [pk]
-  name varchar 
+  name varchar
   country varchar
 }
 
@@ -24,6 +24,7 @@ Table IndividualSkate {
   id int [pk]
   competition int [ref: > Competitions.id] 
   athlete varchar
+  rank int
   type boolean // free or short
   score int
 }
@@ -31,29 +32,31 @@ Table IndividualSkate {
 Table Competitions {
   id int [pk]
   level int // novice, junior, senior
-  location varchar 
-  time datetime
+  host_country varchar [ref: > Countries.name]
+  start_time datetime
+  end_time datetime
 }
 
 Table TechnicalElements {
   id int [pk]
   skate_id int [ref: > IndividualSkate.id]
   type varchar
-  base_score short
-  downgraded boolean // Marked by < or <<
+  base_score int
+  sequence_number int
   is_second_half boolean // Marked by x next to base value
+  downgraded boolean // Marked by < or <<
   edge_call boolean // Marked by e
   is_rep boolean // Marked by +REP 
   failed_requirements boolean // Marked by V
   edge_warning boolean // Marked by ! 
-  GOE short 
+  GOE int 
 }
 
 Table PerformanceElement {
   id int [pk]
-  skate_id int
+  skate_id int [ref: > IndividualSkate.id]
   type varchar
-  multiplier short
+  multiplier int
 }
 
 Table TechnicalElementReference {
@@ -75,6 +78,11 @@ Table JudgesPerformance {
   score int 
 }
 
+Table Deductions {
+  skate int [ref: > IndividualSkate.id]
+  reason varchar
+  points_off int
+}
 
 Ref: Athlete.country > Countries.name
 Ref: Judges.country > Countries.name

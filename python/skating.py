@@ -9,7 +9,7 @@ with open("glossary.json", 'r') as f:
     glossary = json.loads(f.read())
 assert(glossary != {})
 
-all_skaters = []
+all_athletes = []
 all_competitions = []
 
 class Catagory(Enum):
@@ -30,7 +30,8 @@ class Competition:
         self.catagory = catagory
 
 
-class Skater():
+
+class Athlete():
     def __init__(self, name, catagory, skates = []): 
         self.name = name
         self.catagory = catagory
@@ -75,18 +76,18 @@ class Skate():
             line = readline(f)
             i += 1
         
-        skater_name = program[summary_line][0].split('_', 1)
-        skater_name.pop(0)
-        skater_name = "".join(skater_name)
-        self.skater = None
-        for x in all_skaters:
-            if x.name == skater_name:
-                self.skater = x
+        athlete_name = program[summary_line][0].split('_', 1)
+        athlete_name.pop(0)
+        athlete_name = "".join(athlete_name)
+        self.athlete = None
+        for x in all_athletes:
+            if x.name == athlete_name:
+                self.athlete = x
                 break
-        if(self.skater is None): 
-            self.skater = Skater(skater_name, Catagory.MEN)
+        if(self.athlete is None): 
+            self.athlete = Athlete(athlete_name, Catagory.MEN)
         
-        self.skater.addSkate(self)
+        self.athlete.addSkate(self)
         self.elements = []
         self.performances = []
 
@@ -97,13 +98,12 @@ class Skate():
 
         for i in range(performance_line, performance_line + 5): 
             self.performances.append(program[i][length - 1])
-    # def __init__(self, competition, skater, type, elements = []):
-    #     self.skater = skater
-    #     skater.addSkate(self)
+    # def __init__(self, competition, athlete, type, elements = []):
+    #     self.athlete = athlete
+    #     athlete.addSkate(self)
     #     self.TES = 0
     #     self.PCS = 0
     #     self.elements = elements
- 
 
 "3 StSq3,3.30,,,1.14,2 3,1 2,1,3 3,2 3,4.44"
 "5 3F+3T,10.56,,x 1.30,1 2,2 2,2,2 2,1 2,11.86"
@@ -111,9 +111,7 @@ class Element():
     def __init__(self, line): 
         # self.competition = competition
         length = len(line)
-        self.type = line[0].split(" ")[1]
-        
-        #if()
+
         self.take_notes(line[1])
         self.base = float(self.removeExtra(line[1]))
         self.goe = float(self.removeExtra(line[2]))
