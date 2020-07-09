@@ -13,16 +13,20 @@ all_athletes = []
 all_competitions = []
 
 class Catagory(Enum):
-    MEN = 1
-    LADIES = 2
+    men = auto()
+    ladies = auto()
 
 class SkateType(Enum):
     SP = auto()
     FS = auto()
 
 class DeductionTypes(Enum):
-    Fall = auto()
+    fall = auto()
+    time_violation = auto()
+
 class Deduction:
+    def __init__(self, type, ):
+        pass
 
 
 class Competition: 
