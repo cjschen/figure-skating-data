@@ -4,9 +4,9 @@ from .base import Base
 class Athlete(Base):
     __tablename__ = 'athletes'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     birthday = Column(DateTime)
-    country = Column(String)
+    country = Column(String, nullable=False)
     
 
 # class Judge(Base):

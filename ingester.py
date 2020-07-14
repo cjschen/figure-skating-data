@@ -18,17 +18,16 @@ Session.configure(bind=engine)
 session = Session()
 
 
-filename = 'raw_data/csv/OWG2018_MenSingleSkating_SP_Scores.csv'
+for filename in os.listdir('raw_data/csv'):
+    with open(f"raw_data/csv/{filename}", newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
 
-with open(filename, newline='') as f:
-    reader = csv.reader(f)
-    data = list(reader)
-
-try: 
-    read_competition = ReadCompetition(session)
-    read_competition.read_competition(data)
-    session.commit()
-except:
-    session.rollback()
-    raise
+    try: 
+        read_competition = ReadCompetition(session)
+        read_competition.read_competition(data)
+        session.commit()
+    except:
+        session.rollback()
+        raise
 

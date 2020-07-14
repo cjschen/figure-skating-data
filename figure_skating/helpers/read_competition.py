@@ -19,9 +19,17 @@ class ReadCompetition():
         self.session = session
 
     def read_intro(self, line: list) -> int:
-        athlete = Athlete(name = line[1], country = line[2])
-        self.session.add(athlete)
-        self.session.flush()
+
+        athlete = self.session.query(Athlete).\
+            filter(Athlete.name.like(f"%{line[1].split(' ')[0]}%")).\
+            filter(Athlete.name.like(f"%{line[1].split(' ')[1]}%")).\
+            one_or_none()
+        
+        if not athlete:
+            athlete = Athlete(name = line[1], country = line[2])
+
+            self.session.add(athlete)
+            self.session.flush()
 
         skate = IndividualSkate(competition_id = self.comp_id,
                                 athlete_id = athlete.id,
@@ -71,6 +79,8 @@ class ReadCompetition():
         self.session.add(perf)
 
     def determine_stage(self, prev_stage, row):
+        if prev_stage == None:
+            return Stage.competition_summary
         if prev_stage == Stage.competition_summary:
             return Stage.athlete_summary
         if prev_stage == Stage.athlete_summary or prev_stage == Stage.technical and is_number(row[0]):
@@ -86,18 +96,19 @@ class ReadCompetition():
         raise "Unknown Stage combination"
 
     def read_competition(self, data):
-        comp = Competition(level = 1, host_country = 'KOR')
-        self.session.add(comp)
-        self.session.flush()
-        self.comp_id = comp.id
-
+        
+        stage = None
         self.skate_id = None
-        stage = Stage.competition_summary
 
         for row in data: 
             stage = self.determine_stage(stage, row)
 
-            if stage == Stage.athlete_summary: 
+            if stage == Stage.competition_summary:
+                comp = Competition(level = 1, host_country = row[0])
+                self.session.add(comp)
+                self.session.flush()
+                self.comp_id = comp.id
+            elif stage == Stage.athlete_summary: 
                 # Metadata. Always one row
                 self.skate_id = self.read_intro(row)
             elif stage == Stage.technical:
@@ -115,19 +126,20 @@ class ReadCompetition():
                 # Deductions
                 self.read_deductions(row)
 
-    # def reformat_competition(self, data):
-    #     for row in data: 
-    #         if stage == Stage.technical:
-    #             # TES
-    #             if is_number(row[2]):
-    #                 row.insert(2, '')
-    #                 print(row)
-    #             read_technical(row)
-    #         elif stage == 2:
-    #             # PCS
-    #             # ['Performance', '1.00', '6.75', '7.75', '7.00', '7.25', '6.75', '7.50', '8.00', '6.50', '6.75', '7.11']
-    #             self.read_performance(row)
-    #         elif stage == 3:
-    #             # Deductions
-    #             self.read_deductions(row)
-    #             stage = 0
+    def reformat_competition(self, data):
+        for row in data: 
+            if stage == Stage.technical:
+                # TES
+                if is_number(row[2]):
+                    row.insert(2, '')
+                    print(row)
+                read_technical(row)
+            elif stage == 2:
+                # PCS
+                # ['Performance', '1.00', '6.75', '7.75', '7.00', '7.25', '6.75', '7.50', '8.00', '6.50', '6.75', '7.11']
+                self.read_performance(row)
+            elif stage == 3:
+                # Deductions
+                self.read_deductions(row)
+                stage = 0
+        return data
