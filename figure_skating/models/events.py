@@ -5,7 +5,12 @@ class Competition(Base):
     __tablename__ = 'competitions'
     id = Column(Integer, primary_key=True, autoincrement=True)
     level = Column(Integer, nullable=False)
+    type = Column(String, nullable=False)
+    city = Column(String, nullable=False)
     host_country = Column(String, nullable=False)
+    season = Column(String, nullable=False)
+    sp_file_name = Column(String)
+    fs_file_name = Column(String)
     
 
 class IndividualSkate(Base):

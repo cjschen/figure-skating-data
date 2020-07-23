@@ -1,22 +1,11 @@
 import csv
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from figure_skating.models import base
 from figure_skating.helpers.read_competition import ReadCompetition
-
+from figure_skating.models.db import DB
 
 data = []
 
-engine = create_engine(os.environ['DATABASE_URL'])
-base.Base.metadata.drop_all(engine)
-base.Base.metadata.create_all(engine)
-
-
-Session = sessionmaker()
-Session.configure(bind=engine)
-session = Session()
-
+session = DB.Instance().session
 
 for filename in os.listdir('raw_data/csv'):
     with open(f"raw_data/csv/{filename}", newline='') as f:
@@ -24,8 +13,8 @@ for filename in os.listdir('raw_data/csv'):
         data = list(reader)
 
     try: 
-        read_competition = ReadCompetition(session)
-        read_competition.read_competition(data)
+        read_competition = ReadCompetition()
+        read_competition.read_competition(data, filename)
         session.commit()
     except:
         session.rollback()

@@ -1,6 +1,7 @@
 import re
 from enum import Enum, auto
 from .common import is_number, stored_score
+from ..models.db import DB
 from ..models.person import Athlete
 from ..models.components import TechnicalElement, PerformanceComponent, Deduction
 from ..models.events import Competition, IndividualSkate
@@ -15,8 +16,8 @@ class Stage(Enum):
 
 class ReadCompetition():
 
-    def __init__(self, session):
-        self.session = session
+    def __init__(self):
+        self.session = DB.Instance().session
 
     def read_intro(self, line: list) -> int:
 
@@ -94,8 +95,22 @@ class ReadCompetition():
         if prev_stage == Stage.deduction:
             return Stage.athlete_summary
         raise "Unknown Stage combination"
+    def add_competition(self, line, filename):
 
-    def read_competition(self, data):
+        attr = filename.split('_')
+        comp = Competition(level = 1,
+                           type=attr[0],
+                           host_country=line[0],
+                           city=line[1],
+                           season=attr[1],
+                           sp_file_name=filename)
+
+        self.session.add(comp)
+        self.session.flush()
+        return comp.id
+        
+
+    def read_competition(self, data, filename):
         
         stage = None
         self.skate_id = None
@@ -104,10 +119,7 @@ class ReadCompetition():
             stage = self.determine_stage(stage, row)
 
             if stage == Stage.competition_summary:
-                comp = Competition(level = 1, host_country = row[0])
-                self.session.add(comp)
-                self.session.flush()
-                self.comp_id = comp.id
+                self.comp_id = self.add_competition(row, filename)
             elif stage == Stage.athlete_summary: 
                 # Metadata. Always one row
                 self.skate_id = self.read_intro(row)
