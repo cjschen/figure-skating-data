@@ -15,10 +15,6 @@ class Stage(Enum):
     deduction = auto()
 
 class ReadCompetition():
-
-    def __init__(self):
-        self.session = DB.Instance().session
-
     def read_intro(self, line: list) -> int:
 
         athlete = self.session.query(Athlete).\
@@ -95,6 +91,7 @@ class ReadCompetition():
         if prev_stage == Stage.deduction:
             return Stage.athlete_summary
         raise "Unknown Stage combination"
+    
     def add_competition(self, line, filename):
 
         attr = filename.split('_')
@@ -111,13 +108,12 @@ class ReadCompetition():
         
 
     def read_competition(self, data, filename):
-        
+        self.session = DB.Instance().session
+
         stage = None
         self.skate_id = None
-
         for row in data: 
             stage = self.determine_stage(stage, row)
-
             if stage == Stage.competition_summary:
                 self.comp_id = self.add_competition(row, filename)
             elif stage == Stage.athlete_summary: 
@@ -132,26 +128,36 @@ class ReadCompetition():
                 self.read_technical(row)
             elif stage == Stage.performance:
                 # PCS
-                # ['Performance', '1.00', '6.75', '7.75', '7.00', '7.25', '6.75', '7.50', '8.00', '6.50', '6.75', '7.11']
                 self.read_performance(row)
             elif stage == Stage.deduction:
                 # Deductions
                 self.read_deductions(row)
 
     def reformat_competition(self, data):
+        performances = [
+            "Skating Skills",
+            "Transitions",
+            "Performance",
+            "Composition",
+            "Interpretation of the Music"
+        ]
+        stage = None
         for row in data: 
-            if stage == Stage.technical:
+            stage = self.determine_stage(stage, row)
+            if stage == Stage.athlete_summary:
+                name = row[1].split()
+
+                if not name[0].isupper():
+                    name = [name[-1]] + name[:-1] 
+
+                row[1] = " ".join(name)
+            elif stage == Stage.technical:
                 # TES
                 if is_number(row[2]):
                     row.insert(2, '')
                     print(row)
-                read_technical(row)
-            elif stage == 2:
-                # PCS
-                # ['Performance', '1.00', '6.75', '7.75', '7.00', '7.25', '6.75', '7.50', '8.00', '6.50', '6.75', '7.11']
-                self.read_performance(row)
-            elif stage == 3:
-                # Deductions
-                self.read_deductions(row)
-                stage = 0
+            elif stage == Stage.performance:
+                # TODO old results don't always have the same skating skill "names"
+                # but they always seem to have the same order
+                pass
         return data
